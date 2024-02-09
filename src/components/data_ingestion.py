@@ -20,8 +20,8 @@ def extract_tar_files(tar_file_path:str)->str:
 
 # CONVERTING THE TEXT FILE INTO CSV FILES
 def read_json_file(file_path):
+    logging.info("Reading the JSON files")
     try:
-        logging.info(f"Reading the json file: {file_path}")
         with open(file_path, 'r') as file:
             content = json.load(file)
             return content.get("article", "")
