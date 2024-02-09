@@ -8,6 +8,6 @@ from src.exception import CustomException
 if __name__ == '__main__':
     try:
         obj = data_ingestion()
-        logging.info(f"Data ingestion completed")
+        logging.info(f"Data ingestion and converting to csv is completed")
     except CustomException as e:
         logging.info(f"Error in data ingestion: {e}")
