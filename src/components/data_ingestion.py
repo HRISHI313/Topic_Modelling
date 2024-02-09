@@ -8,6 +8,7 @@ from src.exception import CustomException
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+
 # EXTRACTING THE RAW DATA FROM TAR FILES
 def extract_tar_files(tar_file_path:str):
     try:
@@ -49,7 +50,6 @@ def process_folders(root_folder_paths, csv_file_path):
 
 
 # READING THE CSV FILE AND SPLITTING IT INTO TRAIN AND TEST DATA
-
 def read_csv_file(csv_path: str) -> pd.DataFrame:
     try:
         logging.info(f"Reading the csv file: {csv_path}")
