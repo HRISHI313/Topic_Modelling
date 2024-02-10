@@ -4,6 +4,7 @@ import pandas as pd
 import string
 from src.logger import logging
 from src.exception import CustomException
+from nltk.corpus import stopwords
 
 
 
@@ -41,6 +42,18 @@ def removal_punctuation(df1: pd.DataFrame, df2: pd.DataFrame):
 
 
 # REMOVAL OF STOPWORDS
+def removal_stopwords(df1: pd.DataFrame, df2: pd.DataFrame):
+    try:
+        logging.info(f"Removing the stopwords")
+        stop_words = set(stopwords.words('english'))
+        df1['articles'] = df1['articles'].apply(lambda x: " ".join(word for word in x.split() if word not in stop_words))
+        df2['articles'] = df2['articles'].apply(lambda x: " ".join(word for word in x.split() if word not in stop_words))
+
+        logging.info("Stopwords have been removed")
+        return df1, df2
+
+    except CustomException as e:
+        logging.info(f"Error in removal_stopwords: {e}")
 
 
 
