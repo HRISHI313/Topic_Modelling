@@ -90,8 +90,8 @@ def data_ingestion():
         tar_file_path = "artifacts/tar_file/RACE.tar.gz"
         root_folder_paths = ['artifacts/raw_file/RACE/dev', 'artifacts/raw_file/RACE/test', 'artifacts/raw_file/RACE/train']
         csv_file_path = 'artifacts/ingested_data.csv'
-        # extracted_dir_path = extract_tar_files(tar_file_path)
-        # processed_data = process_folders(root_folder_paths, csv_file_path)
+        extracted_dir_path = extract_tar_files(tar_file_path)
+        processed_data = process_folders(root_folder_paths, csv_file_path)
         data_ingest = data_splitting(read_csv_file(csv_file_path))
 
     except Exception as e:
