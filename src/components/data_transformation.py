@@ -122,7 +122,46 @@ def stemming(df1: pd.DataFrame, df2: pd.DataFrame):
 
 
 
-# LEMMA
+# LEMMATIZATION
+def lemmatization(df1: pd.DataFrame, df2: pd.DataFrame):
+    try:
+        lemmatizer = WordNetLemmatizer()
+        df1['articles'] = df1['articles'].apply(lambda x: " ".join([lemmatizer.lemmatize(word) for word in x.split()]))
+        df2['articles'] = df2['articles'].apply(lambda x: " ".join([lemmatizer.lemmatize(word) for word in x.split()]))
+
+        logging.info("Lemmatization has been applied")
+        return df1, df2
+
+    except CustomException as e:
+        logging.info(f"Error in lemmatization: {e}")
+
+# POS TAGGING
+def pos_tagging(df1: pd.DataFrame, df2: pd.DataFrame):
+    try:
+        logging.info(f"POS tagging the words")
+        df1['articles'] = df1['articles'].apply(lambda x: " ".join([pos_tag(word) for word in x.split()]))
+        df2['articles'] = df2['articles'].apply(lambda x: " ".join([pos_tag(word) for word in x.split()]))
+
+        logging.info("POS tagging has been applied")
+        return df1, df2
+
+    except CustomException as e:
+        logging.info(f"Error in pos_tagging: {e}")
+
+
+
+# REMOVAL OF URLs
+def removal_urls(df1: pd.DataFrame, df2: pd.DataFrame):
+    try:
+        logging.info("Removing the URLs")
+        df1['articles'] = df1['articles'].apply(lambda x: " ".join([word for word in x.split() if not ('http' in word or '://' in word or 'www' in word)]))
+        df2['articles'] = df2['articles'].apply(lambda x: " ".join([word for word in x.split() if not ('http' in word or '://' in word or 'www' in word)]))
+
+        logging.info("URLs have been removed")
+        return df1, df2
+    except CustomException as e:
+        logging.error(f"Error in removal_urls: {e}")
+
 
 
 
