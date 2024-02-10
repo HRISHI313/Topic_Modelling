@@ -138,9 +138,9 @@ def lemmatization(df1: pd.DataFrame, df2: pd.DataFrame):
 # POS TAGGING
 def pos_tagging(df1: pd.DataFrame, df2: pd.DataFrame):
     try:
-        logging.info(f"POS tagging the words")
-        df1['articles'] = df1['articles'].apply(lambda x: " ".join([pos_tag(word) for word in x.split()]))
-        df2['articles'] = df2['articles'].apply(lambda x: " ".join([pos_tag(word) for word in x.split()]))
+        logging.info("Performing POS tagging")
+        df1['articles'] = df1['articles'].apply(lambda x: " ".join([pos_tag([word])[0][1] for word in x.split()]))
+        df2['articles'] = df2['articles'].apply(lambda x: " ".join([pos_tag([word])[0][1] for word in x.split()]))
 
         logging.info("POS tagging has been applied")
         return df1, df2
@@ -166,7 +166,23 @@ def removal_urls(df1: pd.DataFrame, df2: pd.DataFrame):
 
 
 
+# DATA TRANSFORMATION
+def data_transformation():
+    try:
+        logging.info(f"Data transformation has been started")
+        train_data, test_data = "artifacts/train_set.csv", "artifacts/test_set.csv"
+        l_c = lower_case(train_data, test_data)
+        r_p = removal_punctuation(l_c[0], l_c[1])
+        r_s = removal_stopwords(r_p[0], r_p[1])
+        r_f = removal_frequent_words(r_s[0], r_s[1])
+        r_sc = removal_special_characters(r_f[0], r_f[1])
+        r_st = stemming(r_sc[0], r_sc[1])
+        r_l = lemmatization(r_st[0], r_st[1])
+        r_pt = pos_tagging(r_l[0], r_l[1])
+        r_u = removal_urls(r_pt[0], r_pt[1])
 
+    except CustomException as e:
+        logging.error(f"Error in data_transformation: {e}")
 
 
 
