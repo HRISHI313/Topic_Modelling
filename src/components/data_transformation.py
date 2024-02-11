@@ -137,18 +137,6 @@ def lemmatization(df1: pd.DataFrame, df2: pd.DataFrame):
     except CustomException as e:
         logging.info(f"Error in lemmatization: {e}")
 
-# POS TAGGING
-def pos_tagging(df1: pd.DataFrame, df2: pd.DataFrame):
-    try:
-        logging.info("Performing POS tagging")
-        df1['articles'] = df1['articles'].apply(lambda x: " ".join([pos_tag([word])[0][1] for word in x.split()]))
-        df2['articles'] = df2['articles'].apply(lambda x: " ".join([pos_tag([word])[0][1] for word in x.split()]))
-
-        logging.info("POS tagging has been applied")
-        return df1, df2
-
-    except CustomException as e:
-        logging.info(f"Error in pos_tagging: {e}")
 
 
 
@@ -166,19 +154,7 @@ def removal_urls(df1: pd.DataFrame, df2: pd.DataFrame):
 
 
 
-# SPELLING CORRECTIONS
-def spelling_correction(df1: pd.DataFrame, df2: pd.DataFrame):
-    try:
-        logging.info("Performing spelling correction")
-        spell = SpellChecker()
-        df1['articles'] = df1['articles'].apply(lambda x: " ".join([spell.correction(word) if spell.correction(word) is not None else word for word in x.split()]))
-        df2['articles'] = df2['articles'].apply(lambda x: " ".join([spell.correction(word) if spell.correction(word) is not None else word for word in x.split()]))
 
-        logging.info("Spelling correction has been applied")
-        return df1, df2
-
-    except CustomException as e:
-        logging.info(f"Error in spelling_correction: {e}")
 
 
 
@@ -209,14 +185,12 @@ def data_transformation():
         r_sc = removal_special_characters(r_f[0], r_f[1])
         r_st = stemming(r_sc[0], r_sc[1])
         r_l = lemmatization(r_st[0], r_st[1])
-        # r_pt = pos_tagging(r_l[0], r_l[1])
         r_u = removal_urls(r_l[0], r_l[1])
-        r_sp = spelling_correction(r_u[0], r_u[1])
 
 
-        r_sp[0].to_csv(train_data,index=False)
-        r_sp[1].to_csv(test_data, index=False)
-        return r_sp[0], r_sp[1]
+        r_u[0].to_csv(train_data,index=False)
+        r_u[1].to_csv(test_data, index=False)
+        return r_u[0], r_u[1]
 
 
     except CustomException as e:
