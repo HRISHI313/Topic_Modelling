@@ -5,6 +5,7 @@ import string
 import re
 from src.logger import logging
 import pickle
+import inflect
 from src.exception import CustomException
 from nltk.corpus import stopwords
 from collections import Counter
@@ -155,6 +156,17 @@ def removal_urls(df1: pd.DataFrame, df2: pd.DataFrame):
         logging.error(f"Error in removal_urls: {e}")
 
 
+# REMOVAL OF NUMBER TO WORDS
+def replace_numbers_with_words(text):
+    p = inflect.engine()
+    words = text.split()
+    for i, word in enumerate(words):
+        if word.isdigit():
+            words[i] = p.number_to_words(word)
+    modified_text = ' '.join(words)
+    return modified_text
+
+
 
 # DATA TRANSFORMATION
 def data_transformation():
@@ -169,17 +181,17 @@ def data_transformation():
         r_st = stemming(r_sc[0], r_sc[1])
         r_l = lemmatization(r_st[0], r_st[1])
         r_u = removal_urls(r_l[0], r_l[1])
+        r_nw[0]['articles'] = r_u[0].apply(replace_numbers_with_words)
+        r_nw[1]['articles'] = r_u[1].apply(replace_numbers_with_words)
 
-
-
-        r_u[0].to_csv(train_data, index=False)
-        r_u[1].to_csv(test_data, index=False)
+        r_nw[0].to_csv(train_data, index=False)
+        r_nw[0].to_csv(test_data, index=False)
 
         logging.info("Data transformation has been completed")
         logging.info("Converting them into pickle files")
-        train_data = "artifacts/pickle_file/data_cleaning.pkl"
-        create_directory("artifacts/pickle_file")
-        r_u[0].to_pickle(train_data)
+        # train_data = "artifacts/pickle_file/data_cleaning.pkl"
+        # create_directory("artifacts/pickle_file")
+        # r_u[0].to_pickle(train_data)
         logging.info(f"Pickle files have been created {train_data}")
         return r_u[0], r_u[1]
 
