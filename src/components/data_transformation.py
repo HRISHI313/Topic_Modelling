@@ -109,13 +109,28 @@ def remove_urls_from_column(df1: pd.DataFrame, df2: pd.DataFrame):
 def remove_non_alphanumeric(df1: pd.DataFrame, df2: pd.DataFrame):
     try:
         logging.info("Removing non-alphanumeric characters")
-        df1['articles'] = df1['articles'].apply(lambda x: re.sub(r'[\d,"\'\':;_\-+=*`~!@#$%^&*(){}.[]:]', '', x))
-        df2['articles'] = df2['articles'].apply(lambda x: re.sub(r'[\d,"\'\':;_\-+=*`~!@#$%^&*(){}.[]:]', '', x))
+        df1['articles'] = df1['articles'].apply(lambda x: re.sub(r'[^\w\s]', '', x))
+        df2['articles'] = df2['articles'].apply(lambda x: re.sub(r'[^\w\s]', '', x))
+
 
         logging.info("Non-alphanumeric characters have been removed")
         return df1, df2
     except CustomException as e:
         logging.info(f"Error in remove_non_alphanumeric: {e}")
+
+
+
+# REMOVING NUMERICS
+def remove_numerics(df1: pd.DataFrame, df2: pd.DataFrame):
+    try:
+        logging.info("Removing numerics")
+        df1['articles'] = df1['articles'].apply(lambda x: re.sub(r'\d+', '', x))
+        df2['articles'] = df2['articles'].apply(lambda x: re.sub(r'\d+', '', x))
+
+        logging.info("Numerics have been removed")
+        return df1, df2
+    except CustomException as e:
+        logging.info(f"Error in remove_numerics: {e}")
 
 
 
@@ -133,6 +148,7 @@ def start_transformation():
         df1, df2 = lemma(df1, df2)
         df1, df2 = remove_urls_from_column(df1, df2)
         df1, df2 = remove_non_alphanumeric(df1, df2)
+        df1, df2 = remove_numerics(df1, df2)
 
         create_directory('artifacts/preprocessing_files')
         df1.to_csv('artifacts/preprocessing_files/train_set.csv', index=False)
