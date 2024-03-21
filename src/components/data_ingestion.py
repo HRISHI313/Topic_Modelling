@@ -52,11 +52,11 @@ def process_folders(root_folder_paths, csv_file_path):
 # READING THE CSV FILE AND SPLITTING IT INTO TRAIN AND TEST DATA
 def read_csv_file(csv_path: str) -> pd.DataFrame:
     try:
-        logging.info(f"Reading the csv file: {csv_path}")
+        # logging.info(f"Reading the csv file: {csv_path}")
         df = pd.read_csv(csv_path, header=None)
         columns = ['articles']
         df.columns = columns
-        logging.info("Adding the column in the CSV")
+#         logging.info("Adding the column in the CSV")
         logging.info(df.head(3))
         return df
 
