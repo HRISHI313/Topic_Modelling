@@ -87,3 +87,62 @@ def show_topic_keywords(vectorizer, model, top_n_words):
         topic_keywords.append(keywords.take(top_keyword_locs))
     return topic_keywords
 
+
+def get_topics_terms_weights(weights, feature_names):
+    # get all the words in the vocabulary
+    feature_names = np.array(feature_names)
+    # get the indices of the weights sorted in descending order
+    sorted_indices = np.array([list(row[::-1]) for row in np.argsort(np.abs(weights))])
+    # get the sorted weights in descending order
+    sorted_weights = np.array([list(wt[index]) for wt, index in zip(weights, sorted_indices)])
+    # get the respetive words of the sorted weights
+    sorted_terms = np.array([list(feature_names[row]) for row in sorted_indices])
+    # storing the words and their learned weights together, arranged in ascending order of weights
+    topics = [np.vstack((terms.T, term_weights.T)).T for terms, term_weights in zip(sorted_terms, sorted_weights)]
+    return topics
+
+
+# prints components of all the topics obtained from topic modeling
+def print_topics_udf(topics, total_topics=1, weight_threshold=0.0001,
+                     display_weights=False, num_terms=10):
+
+    for index in range(total_topics):
+        topic = topics[index]
+        topic = [(term, float(wt)) for term, wt in topic]
+        #print(topic)
+        topic = [(word, round(wt,2)) for word, wt in topic if abs(wt) >= weight_threshold]
+
+        if display_weights:
+            print('Topic #'+ str(index+1) + ' with weights')
+            print(topic[:num_terms], "\n")
+        else:
+            print('Topic #' + str(index+1) + ' without weights')
+            tw = [term for term, wt in topic]
+            print(tw[:num_terms], "\n")
+
+# prints components of all the topics obtained from topic modeling
+def get_topics_udf(topics, total_topics=1, weight_threshold=0.0001, num_terms=None):
+
+    topic_terms = []
+
+    for index in range(total_topics):
+        topic = topics[index]
+        topic = [(term, float(wt)) for term, wt in topic]
+        #print(topic)
+        topic = [(word, round(wt,2)) for word, wt in topic if abs(wt) >= weight_threshold]
+
+        topic_terms.append(topic[:num_terms] if num_terms else topic)
+
+    return topic_terms
+
+def getTermsAndSizes(topic_display_list_item):
+    terms = []
+    sizes = []
+    for term, size in topic_display_list_item:
+        terms.append(term)
+        sizes.append(size)
+    return terms, sizes
+
+
+
+
