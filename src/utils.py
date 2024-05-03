@@ -40,3 +40,40 @@ def draw_word_cloud(topic_index, model):
     plt.axis("off")
     plt.tight_layout()
     plt.show()
+
+
+def stats_of_documents(data:pd.DataFrame):
+
+    data = data['clean_document'].tolist()
+
+    # PoS tagging
+    tagged_documents = [TextBlob(data[i]).pos_tags for i in range(len(data))]
+    tagged_documents_df = pd.DataFrame({'tags': tagged_documents})
+
+    word_counts = []
+    pos_counts = {}
+
+    for tagged_text in tagged_documents_df['tags']:
+        word_counts.append(len(tagged_text))
+
+        for word, tag in tagged_text:
+            if tag in pos_counts:
+                pos_counts[tag] += 1
+            else:
+                pos_counts[tag] = 1
+
+    print(f"Total number of words in the document: {np.sum(word_counts)}")
+    print(f"Mean count of words per article in the document: {round(np.mean(word_counts))}")
+    print(f"Minimum count of words of an article in the document: {np.min(word_counts)}")
+    print(f"Maxmimum count of words of an article in the document: {np.max(word_counts)}")
+
+    pos_sorted_types = sorted(pos_counts, key=pos_counts.__getitem__, reverse=True)
+    pos_sorted_counts = sorted(pos_counts.values(), reverse=True)
+
+    fig, ax = plt.subplots(figsize=(12,4))
+    ax.bar(range(len(pos_counts)), pos_sorted_counts)
+    ax.set_xticks(range(len(pos_counts)))
+    ax.set_xticklabels(pos_sorted_types, rotation=30)
+    ax.set_title('Part-of-Speech Tagging for the Corpus of Articles')
+    ax.set_xlabel('Type of Word')
+    plt.show();

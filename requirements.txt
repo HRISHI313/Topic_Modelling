@@ -6,5 +6,7 @@ scikit-learn
 nltk
 pyspellchecker
 inflect
-
+bokeh
+wordcloud
+textblob
 -e .

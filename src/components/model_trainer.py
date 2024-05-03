@@ -13,10 +13,14 @@ from sklearn.manifold import TSNE
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Label
 from wordcloud import WordCloud
-from src.utils import draw_word_cloud
+from src.utils import draw_word_cloud, stats_of_documents
+from textblob import TextBlob
+
 
 # Latent Semantic Analysis(LSA)
 train_documents = pd.read_csv("artifacts/train_set.csv")
+test_documents = pd.read_csv("artifacts/test_set.csv")
+
 vectorizer = TfidfVectorizer(stop_words='english',
                              max_features=4000)
 vect_text = vectorizer.fit_transform(train_documents['clean_document'])
@@ -105,6 +109,39 @@ vocabulary = vectorizer.get_feature_names_out()
 draw_word_cloud(topic_index=0, model=lsa_model)
 draw_word_cloud(1, lsa_model)
 draw_word_cloud(5, lsa_model)
+
+save_path_topic_0 = "artifacts/Figure/wordcloud_topic_0.png"
+save_path_topic_1 = "artifacts/Figure/wordcloud_topic_1.png"
+save_path_topic_5 = "artifacts/Figure/wordcloud_topic_5.png"
+
+# Draw and save word cloud for each topic
+draw_word_cloud(topic_index = 0, model=lsa_model, save_path = save_path_topic_0)
+draw_word_cloud(topic_index = 1, model=lsa_model, save_path = save_path_topic_1)
+draw_word_cloud(topic_index = 5, model=lsa_model, save_path = save_path_topic_5)
+
+#Predicting on test-documents
+stats_of_documents(test_documents)
+
+vect_text_test = vectorizer.transform(test_documents['clean_document'])
+lsa_top_test = lsa_model.transform(vect_text_test)
+
+lsa_keys_test = get_keys(lsa_top_test)
+lsa_categories_test, lsa_counts_test = keys_to_counts(lsa_keys_test)
+lsa_categories_test, lsa_counts_test
+
+topics_df_test = pd.DataFrame({'topic' : lsa_categories_test, 'count' : lsa_counts_test})
+sns.barplot(x=topics_df_test['topic'], y = topics_df_test['count'])
+save_path = "artifacts/Figure/bar_plot.png"
+plt.savefig(save_path, bbox_inches='tight', pad_inches=0.1)
+print(f"Bar plot saved as {save_path}")
+
+documet_topic_lsa_test = topics_document(model_output=lsa_top_test,
+                                         n_topics=10,
+                                         data=test_documents)
+
+sa_model_save_path = "artifacts/models/lsa_model.pkl"
+joblib.dump(lsa_model, lsa_model_save_path)
+print(f"LSA model saved as {lsa_model_save_path}")
 
 
 
