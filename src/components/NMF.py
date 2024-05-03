@@ -166,7 +166,8 @@ nmf_top_test = nmf.transform(vectorized_test_text)
 documet_topic_nmf_test = topics_document(nmf_top_test, n_topics=22, data=test_documents)
 
 
-dump(nmf, 'nmf_model.joblib')
+lsa_model_save_path = "artifacts/models/nmf_model.pkl"
+joblib.dump(nmf, lsa_model_save_path)
 
 
 

@@ -171,7 +171,9 @@ topic_keywords_gensim_df = pd.DataFrame(topic_keywords_gensim)
 topic_keywords_gensim_df.columns = ['Word '+ str(i) for i in range(topic_keywords_gensim_df.shape[1])]
 topic_keywords_gensim_df.index = ['Topic '+ str(i) for i in range(topic_keywords_gensim_df.shape[0])]
 
-lda_model_gensim.save("artifacts/lda_model_gensim")
+lda_model_gensim.save("artifacts/lda_model.pkl")
+
+
 
 
 
