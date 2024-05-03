@@ -5,27 +5,17 @@ import pandas as pd
 from src.logger import logging
 from src.exception import CustomException
 from src.utils import create_directory
-import pickle
-from sklearn.feature_extraction.text import CountVectorizer
+from joblib import dump
 from sklearn.decomposition import NMF
-from sklearn.decomposition import TruncatedSVD
 from src.utils import topics_document
 from collections import Counter
 from sklearn.manifold import TSNE
-from bokeh.plotting import figure, output_file, show
-from bokeh.models import Label
-from wordcloud import WordCloud
 from src.utils import draw_word_cloud, stats_of_documents, show_topic_keywords
 from textblob import TextBlob
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Label
 from bokeh.io import output_notebook
 from bokeh.io import export_png
-import gensim
-from gensim.models import LdaModel
-from gensim.models.coherencemodel import CoherenceModel
-from gensim.corpora.dictionary import Dictionary
-from gensim.models.coherencemodel import CoherenceModel
 
 
 # Topic Modeling: Non-Negative Matrix Factorization (NMF)
@@ -174,7 +164,10 @@ vectorized_test_text = tfidf_vectorizer.transform(test_documents['clean_tokens']
 nmf_top_test = nmf.transform(vectorized_test_text)
 
 documet_topic_nmf_test = topics_document(nmf_top_test, n_topics=22, data=test_documents)
-documet_topic_nmf_test
+
+
+dump(nmf, 'nmf_model.joblib')
+
 
 
 
