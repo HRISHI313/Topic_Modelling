@@ -9,4 +9,5 @@ inflect
 bokeh
 wordcloud
 textblob
+gensim
 -e .

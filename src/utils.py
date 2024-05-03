@@ -76,4 +76,14 @@ def stats_of_documents(data:pd.DataFrame):
     ax.set_xticklabels(pos_sorted_types, rotation=30)
     ax.set_title('Part-of-Speech Tagging for the Corpus of Articles')
     ax.set_xlabel('Type of Word')
-    plt.show();
+    plt.show()
+
+
+def show_topic_keywords(vectorizer, model, top_n_words):
+    keywords = np.array(vectorizer.get_feature_names_out())
+    topic_keywords = []
+    for topic_weight in model.components_:
+        top_keyword_locs = (-topic_weight).argsort()[:top_n_words]
+        topic_keywords.append(keywords.take(top_keyword_locs))
+    return topic_keywords
+
